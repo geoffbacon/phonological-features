@@ -1,0 +1,11 @@
+allennlp==0.9
+apache-beam
+fire
+numpy
+pandas
+panphon
+scikit-learn
+stanza
+tensorflow
+tensorflow-datasets
+tqdm
