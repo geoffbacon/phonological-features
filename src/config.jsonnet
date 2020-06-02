@@ -70,7 +70,7 @@ local READER = {
         },
         num_epochs: NUM_EPOCHS,
         patience: 2,
-        cuda_device: if USE_GPU then 0 else -1,
+        cuda_device: if USE_GPU then 2 else -1,
         shuffle: false,
         num_serialized_models_to_keep: -1,
     },
