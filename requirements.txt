@@ -1,6 +1,7 @@
 allennlp==0.9
 apache-beam
 fire
+#gensim
 numpy
 pandas
 panphon

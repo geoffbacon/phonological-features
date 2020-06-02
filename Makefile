@@ -38,4 +38,4 @@ wikipron:
 	python src/wikipron.py
 
 
-.PHONY: requirements install clean format lint phonemes
+.PHONY: requirements install clean format lint wikipron
