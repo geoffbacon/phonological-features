@@ -33,9 +33,12 @@ lint: format
 
 # Data-related targets
 
+# download and preprocess the phoneme-level data
 wikipron:
 	./src/wikipron.sh
 	python src/wikipron.py
+
+
 
 
 .PHONY: requirements install clean format lint wikipron

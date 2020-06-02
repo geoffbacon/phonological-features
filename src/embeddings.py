@@ -138,5 +138,15 @@ def train(
         save(model, filename)
 
 
+def train_phonemes():
+    """Train all phoneme-level embedding models"""
+    from wikipron import LANGUAGES
+
+    for lg in LANGUAGES.index:
+        for size in [5, 10, 20, 30]:
+            for window in [1, 2, 3]:
+                train("phoneme", lg, size, window, epochs=10, ngrams=0, min_count=1)
+
+
 if __name__ == "__main__":
     fire.Fire(train)

@@ -2,12 +2,12 @@
 import os
 import re
 
-import fire
-from tqdm import tqdm
-
 import apache_beam as beam
+import fire
 import stanza
 import tensorflow_datasets as tfds
+from tqdm import tqdm
+
 from utils import parallelize, write
 
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"  # silence TensorFlow warnings

@@ -117,6 +117,7 @@ def prepare():
     for lg in tqdm(LANGUAGES.index):
         _prepare(lg)
 
+
 def count(lg):
     """Count the number of editsmy preprocessing performs."""
     wikipron = load_wikipron(lg)
@@ -130,7 +131,6 @@ def count(lg):
                 result.append({"form": form, "ch": ch})
                 print(f"{lg} | {form} | {ch}")
     result = pd.DataFrame(result)
-
 
 
 if __name__ == "__main__":
