@@ -1,8 +1,5 @@
 data/phoneme/wikipron
 data/word/wiki40b
-# !data/.gitkeep
-# !/data/phoneme/phoible/**
-# !/data/phoneme/languages.csv
 logs/**
 !logs/.gitkeep
 models/**
