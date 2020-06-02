@@ -1,4 +1,5 @@
 data/phoneme/wikipron
+data/phoneme/features
 data/word/wiki40b
 logs/**
 !logs/.gitkeep
