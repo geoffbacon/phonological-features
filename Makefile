@@ -37,6 +37,7 @@ lint: format
 wikipron:
 	./src/wikipron.sh
 	python src/wikipron.py
+	python src/features.py
 
 # train all phoneme-level models
 train-phonemes:
