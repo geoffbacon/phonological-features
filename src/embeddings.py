@@ -54,14 +54,20 @@ class ProgressCallback(CallbackAny2Vec):
         )
 
     def on_epoch_end(self, model):
-        logging.info(f"{self.level} {self.lg} {self.i}/{self.epochs}")
+        logging.info(
+            f"{self.level} {self.lg} {model.vector_size} {model.window} {self.i}/{self.epochs}"
+        )
         self.i += 1
 
     def on_train_begin(self, model):
-        logging.info(f"{self.level} {self.lg} Beginning")
+        logging.info(
+            f"{self.level} {self.lg} {model.vector_size} {model.window} Beginning"
+        )
 
     def on_train_end(self, model):
-        logging.info(f"{self.level} {self.lg} Finished")
+        logging.info(
+            f"{self.level} {self.lg} {model.vector_size} {model.window} Finished"
+        )
 
 
 # pylint: disable=W1203
@@ -149,4 +155,4 @@ def train_phonemes():
 
 
 if __name__ == "__main__":
-    fire.Fire(train)
+    fire.Fire({"train": train, "train-phonemes": train_phonemes})

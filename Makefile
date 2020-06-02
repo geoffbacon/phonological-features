@@ -38,7 +38,9 @@ wikipron:
 	./src/wikipron.sh
 	python src/wikipron.py
 
+# train all phoneme-level models
+train-phonemes:
+	nohup python -u src/embeddings.py train-phonemes > logs/nohup.out &
 
 
-
-.PHONY: requirements install clean format lint wikipron
+.PHONY: requirements install clean format lint wikipron train-phonemes
