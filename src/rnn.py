@@ -37,7 +37,7 @@ def train(level, lg, name, size, hidden, epochs=10):
         "HIDDEN": hidden,
         "NUM_EPOCHS": epochs,
         "USE_GPU": GPU_AVAILABLE,
-        "BATCH_SIZE": 16,
+        "BATCH_SIZE": 8,
     }
     config_str = prepare_config(options)
     config = json.loads(_jsonnet.evaluate_snippet("snippet", config_str))
@@ -49,14 +49,16 @@ def train(level, lg, name, size, hidden, epochs=10):
     os.system(cmd)
 
 
-def sweep(level, lg, name):
-    SIZES = [20, 40, 60, 80, 100, "groundTruth"]
-    HIDDENS = [50, 100, 200]
-    for hyperparams in itertools.product(SIZES, HIDDENS):
-        size = hyperparams[0]
-        hidden = hyperparams[1]
-        train(level=level, lg=lg, name=name, size=size, hidden=hidden)
+def train_phonemes():
+    """Train all phoneme-level RNN models"""
+    from wikipron import LANGUAGES
+
+    for lg in LANGUAGES.index:
+        for name in ["rnn", "lstm", "gru"]:
+            for size in [5, 10, 20, 30, "groundTruth"]:
+                for hidden in [5, 10, 20, 30, 50]:
+                    train("phoneme", lg, name, size, hidden, epochs=10)
 
 
 if __name__ == "__main__":
-    fire.Fire(train)
+    fire.Fire({"train": train, "train-phonemes": train_phonemes})
