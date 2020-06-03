@@ -32,7 +32,8 @@ def correlate(**kwargs):
         hyperparams = f"{kwargs['size']}-{kwargs['hidden']}"
     else:
         hyperparams = f"{kwargs['size']}-{kwargs['window']}"
-    path = f"results/{level}/correlation/{lg}/{hyperparams}"
+    name = kwargs["name"]
+    path = f"results/{level}/correlation/{lg}/{name}/{hyperparams}"
     ensure_dir(path)
     epoch = kwargs["epoch"]
     filename = os.path.join(path, f"{epoch}.txt")

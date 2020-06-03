@@ -55,8 +55,7 @@ def train_phonemes():
 
     for lg in LANGUAGES.index:
         for name in ["rnn", "lstm", "gru"]:
-            # for size in [5, 10, 20, 30, "groundTruth"]:
-            for size in ["groundTruth"]:
+            for size in [5, 10, 20, 30, "groundTruth"]:
                 for hidden in [5, 10, 20, 30, 50]:
                     train("phoneme", lg, name, size, hidden, epochs=10)
 
