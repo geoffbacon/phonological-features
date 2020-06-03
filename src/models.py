@@ -115,8 +115,8 @@ def all_trained_phoneme_models():
     ]
     for embedding_filename in trained_embedding_filenames:
         _, level, lg, name, hyperparams, epoch = embedding_filename.split("/")
-        size, window = hyperparams.split("-")
-        epoch = epoch.split(".")[0]
+        size, window = map(int, hyperparams.split("-"))
+        epoch = int(epoch.split(".")[0])
         kwargs = {
             "level": level,
             "lg": lg,

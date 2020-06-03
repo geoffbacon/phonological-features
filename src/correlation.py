@@ -4,6 +4,7 @@ import os
 import numpy as np
 from scipy.spatial.distance import squareform
 from scipy.stats import spearmanr
+from tqdm import tqdm
 
 from models import embeddings_to_dissimilarity, load_embeddings
 from utils import ensure_dir
@@ -41,10 +42,10 @@ def correlate(**kwargs):
 
 
 def main():
-    from models import all_trained_models
+    from models import all_trained_phoneme_models
 
-    models = all_trained_models()
-    for kwargs in models:
+    models = all_trained_phoneme_models()
+    for kwargs in tqdm(models):
         size = kwargs["size"]
         if size != "groundTruth":
             _ = correlate(**kwargs)
