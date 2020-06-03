@@ -41,7 +41,7 @@ wikipron:
 
 # train all phoneme-level models
 train-phonemes:
-	nohup python -u src/embeddings.py train-phonemes > logs/nohup.out
-	nohup python -u src/rnn.py train-phonemes > logs/nohup.out &
+	nohup python -u src/embeddings.py train-phonemes > logs/embeddings.out
+	nohup python -u src/rnn.py train-phonemes > logs/rnn.out
 
 .PHONY: requirements install clean format lint wikipron train-phonemes
