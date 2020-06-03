@@ -5,16 +5,12 @@ from scipy.spatial.distance import squareform
 from scipy.stats import spearmanr
 
 from models import embeddings_to_dissimilarity, load_embeddings
+from wikipron import load_features
 
 
-def correlate(embeddings, ground_truth):
-    # Pairwise dissimilarities of learnt representations
-    learnt_dissimilarity_matrix = embeddings_to_dissimilarity(embeddings)
-    learnt_dissimilarities = squareform(learnt_dissimilarity_matrix)
-
-    # Pairwise dissimilarities of ground truth representations
-    objects = list(learnt_dissimilarity_matrix.index)
-    row_indices, column_indices = np.triu_indices(len(learnt_dissimilarity_matrix), k=1)
-    rows = [learnt_dissimilarity_matrix.index[i] for i in row_indices]
-    columns = [learnt_dissimilarity_matrix.columns[j] for j in column_indices]
-    indices = list(zip(rows, columns))
+def correlate(**kwargs):
+    embeddings = load_embeddings(**kwargs)
+    dissimilarities = embeddings_to_dissimilarity(embeddings)
+    level, lg = kwargs["level"], kwargs["lg"]
+    assert level == "phoneme", "This function is only for phoneme-level models"
+    features = load_features(lg)

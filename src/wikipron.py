@@ -47,6 +47,11 @@ def load_inventory(language):
     return no_tones
 
 
+def load_features(language):
+    filename = f"data/phoneme/features/{language}/features.csv"
+    return pd.read_csv(filename, index_col=0)
+
+
 class Preprocessor:
     def __init__(self, language):
         self.language = language

@@ -84,10 +84,26 @@ if False:
     size = 10
     window = 1
     epoch = 10
+    kwargs = {
+        "level": level,
+        "lg": lg,
+        "name": name,
+        "size": size,
+        "window": window,
+        "epoch": epoch,
+    }
 else:
     level = "phoneme"
-    lg = "fre"
-    name = "lstm"
+    lg = "por_po"
+    name = "rnn"
     size = 5
-    hidden = 10
+    hidden = 5
     epoch = "best"
+    kwargs = {
+        "level": level,
+        "lg": lg,
+        "name": name,
+        "size": size,
+        "hidden": hidden,
+        "epoch": epoch,
+    }
