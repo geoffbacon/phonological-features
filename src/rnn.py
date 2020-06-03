@@ -46,7 +46,7 @@ def train(level, lg, name, size, hidden, epochs=10):
         json.dump(config, file, indent=2)
     serialization_dir = f"models/{level}/{lg}/{name}/{size}-{hidden}"
     cmd = TRAIN_CMD.format(directory=serialization_dir, config=TMP_CONFIG_FILENAME)
-    _ = os.system(cmd)
+    os.system(cmd)
 
 
 def train_phonemes():

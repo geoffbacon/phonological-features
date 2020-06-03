@@ -1,9 +1,11 @@
 """Tools for interacting with trained models."""
 import os
 
+import numpy as np
 import pandas as pd
 from allennlp.models.archival import load_archive
 from allennlp.predictors import Predictor
+from scipy.spatial.distance import pdist, squareform
 
 from wikipron import END_CHARACTER, START_CHARACTER
 
@@ -49,7 +51,33 @@ def load_rnn_embeddings(level, lg, name, size, hidden, epoch="best"):
     return maybe_remove_start_end_chars(embeddings)
 
 
-if True:
+def load_embeddings(**kwargs):
+    if kwargs["name"] in ["word2vec", "fasttext"]:
+        return load_static_embeddings(**kwargs)
+    elif kwargs["name"] in ["rnn", "lstm", "gru"]:
+        return load_rnn_embeddings(**kwargs)
+
+
+def embeddings_to_dissimilarity(embeddings):
+    objects = embeddings.index
+    distances = squareform(pdist(embeddings, metric="cosine"))
+    distances = np.round(distances, decimals=7)
+    dissimilarity_matrix = pd.DataFrame(distances, index=objects, columns=objects)
+    # sanity checks
+    assert (
+        dissimilarity_matrix.index == dissimilarity_matrix.columns
+    ).all(), "Misaligned phonemes"
+    assert np.allclose(
+        (np.diag(dissimilarity_matrix.values)),
+        np.zeros(len(dissimilarity_matrix)),
+        atol=1e-6,
+    ), "Diagonal not all zeros"
+    assert (dissimilarity_matrix.dtypes == np.float64).all(), "Not float dtype"
+    assert np.allclose(dissimilarity_matrix, dissimilarity_matrix.T), "Not symmetric"
+    return dissimilarity_matrix
+
+
+if False:
     level = "phoneme"
     lg = "acw"
     name = "word2vec"
