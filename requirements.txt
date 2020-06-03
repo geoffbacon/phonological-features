@@ -2,10 +2,12 @@ allennlp==0.9
 apache-beam
 fire
 #gensim
+matplotlib
 numpy
 pandas
 panphon
 scikit-learn
+seaborn
 stanza
 tensorflow
 tensorflow-datasets
