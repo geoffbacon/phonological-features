@@ -2,6 +2,7 @@ allennlp==0.9
 apache-beam
 fire
 #gensim
+jupyter
 matplotlib
 numpy
 pandas

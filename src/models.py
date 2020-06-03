@@ -1,5 +1,6 @@
 """Tools for interacting with trained models."""
 import glob
+import json
 import os
 
 import numpy as np
@@ -127,3 +128,20 @@ def all_trained_phoneme_models():
         }
         result.append(kwargs)
     return result
+
+
+def performance(**kwargs):
+    assert "hidden" in kwargs, "Performance only makes sense for RNN models"
+    level, lg, name, size, hidden, epoch = (
+        kwargs["level"],
+        kwargs["lg"],
+        kwargs["name"],
+        kwargs["size"],
+        kwargs["hidden"],
+        kwargs["epoch"],
+    )
+    filename = f"models/{level}/{lg}/{name}/{size}-{hidden}/metrics_epoch_{epoch}.json"
+    with open(filename) as file:
+        metrics = json.load(file)
+    return metrics["validation_perplexity"]
+

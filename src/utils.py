@@ -3,6 +3,8 @@
 import os
 from multiprocessing import Pool
 
+ROOT = "/Users/bacon/Desktop/dissertation"
+
 
 def parallelize(func, data, n_workers=4):
     num_data = len(data)
