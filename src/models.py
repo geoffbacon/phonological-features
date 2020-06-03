@@ -1,4 +1,5 @@
 """Tools for interacting with trained models."""
+import glob
 import os
 
 import numpy as np
@@ -77,33 +78,52 @@ def embeddings_to_dissimilarity(embeddings):
     return dissimilarity_matrix
 
 
-if False:
-    level = "phoneme"
-    lg = "acw"
-    name = "word2vec"
-    size = 10
-    window = 1
-    epoch = 10
-    kwargs = {
-        "level": level,
-        "lg": lg,
-        "name": name,
-        "size": size,
-        "window": window,
-        "epoch": epoch,
-    }
-else:
-    level = "phoneme"
-    lg = "por_po"
-    name = "rnn"
-    size = 5
-    hidden = 5
-    epoch = "best"
-    kwargs = {
-        "level": level,
-        "lg": lg,
-        "name": name,
-        "size": size,
-        "hidden": hidden,
-        "epoch": epoch,
-    }
+def all_trained_phoneme_models():
+    """Returns list of all trained phoneme models in (level, lg, name, size, hidden/window, epoch) tuples.
+
+    We want both RNN and embedding models. For RNN models, we only want those models that have
+    finished training, as indicated by the presence of a model.tar.gz file. For each of these,
+    we want to know the number of epochs it actually trained for, as the patience might have 
+    stopped it early.
+    """
+    result = []
+    # First get all RNN models
+    trained_model_filenames = glob.glob("models/**/model.tar.gz", recursive=True)
+    for model_filename in trained_model_filenames:
+        _, level, lg, name, hyperparams, _ = model_filename.split("/")
+        size, hidden = hyperparams.split("-")
+        dirname = os.path.dirname(model_filename)
+        # The metric filenames tell us how many epochs it actually trained for
+        metric_filenames = [f for f in os.listdir(dirname) if "metrics_epoch" in f]
+        last_metric_filename = sorted(metric_filenames)[-1]
+        epochs = int(last_metric_filename.split(".")[0].split("_")[-1])
+        for epoch in range(epochs + 1):
+            kwargs = {
+                "level": level,
+                "lg": lg,
+                "name": name,
+                "size": size,
+                "hidden": hidden,
+                "epoch": epoch,
+            }
+            result.append(kwargs)
+    # Now add all embedding models
+    trained_embedding_filenames = [
+        f
+        for f in glob.glob("models/**/*.txt", recursive=True)
+        if (("word2vec" in f) or ("fasttext" in f))
+    ]
+    for embedding_filename in trained_embedding_filenames:
+        _, level, lg, name, hyperparams, epoch = embedding_filename.split("/")
+        size, window = hyperparams.split("-")
+        epoch = epoch.split(".")[0]
+        kwargs = {
+            "level": level,
+            "lg": lg,
+            "name": name,
+            "size": size,
+            "window": window,
+            "epoch": epoch,
+        }
+        result.append(kwargs)
+    return result
