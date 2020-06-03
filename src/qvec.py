@@ -60,14 +60,14 @@ def heatmap(**kwargs):
     ensure_dir(path)
     epoch = kwargs["epoch"]
     filename = os.path.join(path, f"{epoch}.png")
-    ensure_dir(filename)
     fig = plt.gcf()
     fig.savefig(filename)
 
 
-def qvec_cca(language, char, hidden, epoch):
-    embeddings = load_embeddings(language, char, hidden, epoch).T
-    features = load_features(language).T
+def qvec_cca(**kwargs):
+    embeddings = load_embeddings(**kwargs).T
+    lg = kwargs["lg"]
+    features = load_features(lg).T
     common_phonemes = embeddings.columns.intersection(features.columns)
     S = features[common_phonemes]
     X = embeddings[common_phonemes]
