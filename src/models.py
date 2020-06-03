@@ -144,4 +144,3 @@ def performance(**kwargs):
     with open(filename) as file:
         metrics = json.load(file)
     return metrics["validation_perplexity"]
-

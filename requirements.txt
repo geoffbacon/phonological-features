@@ -1,5 +1,6 @@
 allennlp==0.9
 apache-beam
+blackcellmagic
 fire
 #gensim
 jupyter
