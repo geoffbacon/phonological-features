@@ -2,9 +2,13 @@
 import os
 
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 import seaborn as sns
+from scipy import linalg
+from scipy.linalg import decomp_qr
 from scipy.stats import pearsonr
+from sklearn import preprocessing
 from sklearn.cross_decomposition import CCA
 from tqdm import tqdm
 
@@ -71,7 +75,7 @@ def qvec_cca(**kwargs):
     common_phonemes = embeddings.columns.intersection(features.columns)
     S = features[common_phonemes]
     X = embeddings[common_phonemes]
-    cca = CCA(n_components=1)
+    cca = CCA(n_components=min(len(S), len(X)))
     a, b = cca.fit_transform(X.T, S.T)
     a, b = a.reshape(-1), b.reshape(-1)
     r, p = pearsonr(a, b)
@@ -90,6 +94,34 @@ def qvec_cca(**kwargs):
     return r, p
 
 
+def norm_center_matrix(m):
+    m = preprocessing.normalize(m)
+    m_mean = m.mean(axis=0)
+    m -= m_mean
+    return m
+
+
+def original(**kwargs):
+    embeddings = load_embeddings(**kwargs)
+    lg = kwargs["lg"]
+    features = load_features(lg)
+    common_phonemes = embeddings.index.intersection(features.index)
+    S = features.loc[common_phonemes]
+    X = embeddings.loc[common_phonemes]
+    assert X.shape[0] == S.shape[0], (X.shape, S.shape, "Unequal number of rows")
+    assert X.shape[0] > 1, (X.shape, "Must have more than 1 row")
+    X = norm_center_matrix(X)
+    S = norm_center_matrix(S)
+    X_q, _, _ = decomp_qr.qr(X, overwrite_a=True, mode="economic", pivoting=True)
+    S_q, _, _ = decomp_qr.qr(S, overwrite_a=True, mode="economic", pivoting=True)
+    C = np.dot(X_q.T, S_q)
+    r = linalg.svd(C, full_matrices=False, compute_uv=False)
+    d = min(X.shape[1], S.shape[1])
+    r = r[:d]
+    r = np.minimum(np.maximum(r, 0.0), 1.0)  # remove roundoff errs
+    return r.mean()
+
+
 def main():
     from models import all_trained_phoneme_models
 
@@ -98,8 +130,8 @@ def main():
         size = kwargs["size"]
         if size != "groundTruth":
             _ = heatmap(**kwargs)
-            _ = qvec_cca(**kwargs)
+            _ = original(**kwargs)
 
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()
