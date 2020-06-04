@@ -29,12 +29,12 @@ def correlate(**kwargs):
     )
     correlations.columns = S.index
     # Write results to disk
-    level = kwargs["level"]
+    level, name = kwargs["level"], kwargs["name"]
     if "hidden" in kwargs:
         hyperparams = f"{kwargs['size']}-{kwargs['hidden']}"
     else:
         hyperparams = f"{kwargs['size']}-{kwargs['window']}"
-    path = f"results/{level}/qvec/{lg}/{hyperparams}"
+    path = f"results/{level}/qvec/{lg}/{name}/{hyperparams}"
     ensure_dir(path)
     epoch = kwargs["epoch"]
     filename = os.path.join(path, f"{epoch}.csv")
@@ -55,12 +55,12 @@ def heatmap(**kwargs):
     locs, labels = plt.yticks()
     plt.setp(labels, rotation=0)
     # Write results to disk
-    level, lg = kwargs["level"], kwargs["lg"]
+    level, lg, name = kwargs["level"], kwargs["lg"], kwargs["name"]
     if "hidden" in kwargs:
         hyperparams = f"{kwargs['size']}-{kwargs['hidden']}"
     else:
         hyperparams = f"{kwargs['size']}-{kwargs['window']}"
-    path = f"results/{level}/qvec/{lg}/{hyperparams}"
+    path = f"results/{level}/qvec/{lg}/{name}/{hyperparams}"
     ensure_dir(path)
     epoch = kwargs["epoch"]
     filename = os.path.join(path, f"{epoch}.png")
@@ -75,17 +75,17 @@ def qvec_cca(**kwargs):
     common_phonemes = embeddings.columns.intersection(features.columns)
     S = features[common_phonemes]
     X = embeddings[common_phonemes]
-    cca = CCA(n_components=min(len(S), len(X)))
+    cca = CCA(n_components=1)
     a, b = cca.fit_transform(X.T, S.T)
     a, b = a.reshape(-1), b.reshape(-1)
     r, p = pearsonr(a, b)
     # Write results to disk
-    level, lg = kwargs["level"], kwargs["lg"]
+    level, lg, name = kwargs["level"], kwargs["lg"], kwargs["name"]
     if "hidden" in kwargs:
         hyperparams = f"{kwargs['size']}-{kwargs['hidden']}"
     else:
         hyperparams = f"{kwargs['size']}-{kwargs['window']}"
-    path = f"results/{level}/qvec/{lg}/{hyperparams}"
+    path = f"results/{level}/qvec/{lg}/{name}/{hyperparams}"
     ensure_dir(path)
     epoch = kwargs["epoch"]
     filename = os.path.join(path, f"{epoch}.txt")
@@ -119,7 +119,20 @@ def original(**kwargs):
     d = min(X.shape[1], S.shape[1])
     r = r[:d]
     r = np.minimum(np.maximum(r, 0.0), 1.0)  # remove roundoff errs
-    return r.mean()
+    r = r.mean()
+    # Write results to disk
+    level, lg, name = kwargs["level"], kwargs["lg"], kwargs["name"]
+    if "hidden" in kwargs:
+        hyperparams = f"{kwargs['size']}-{kwargs['hidden']}"
+    else:
+        hyperparams = f"{kwargs['size']}-{kwargs['window']}"
+    path = f"results/{level}/qvec/{lg}/{name}/{hyperparams}"
+    ensure_dir(path)
+    epoch = kwargs["epoch"]
+    filename = os.path.join(path, f"{epoch}.txt")
+    with open(filename, "w") as file:
+        file.write(str(r))
+    return r
 
 
 def main():
@@ -133,5 +146,5 @@ def main():
             _ = original(**kwargs)
 
 
-# if __name__ == "__main__":
-#     main()
+if __name__ == "__main__":
+    main()
