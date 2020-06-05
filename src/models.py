@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 from allennlp.models.archival import load_archive
 from allennlp.predictors import Predictor
+from gensim.models.keyedvectors import KeyedVectors
 from scipy.spatial.distance import pdist, squareform
 
 from wikipron import END_CHARACTER, START_CHARACTER
@@ -58,6 +59,13 @@ def load_embeddings(**kwargs):
         return load_static_embeddings(**kwargs)
     elif kwargs["name"] in ["rnn", "lstm", "gru"]:
         return load_rnn_embeddings(**kwargs)
+
+
+def load_keyedvectors(**kwargs):
+    embeddings = load_embeddings(**kwargs)
+    vectors = KeyedVectors(int(kwargs["size"]))
+    vectors.add(embeddings.index, embeddings.values)
+    return vectors
 
 
 def embeddings_to_dissimilarity(embeddings):

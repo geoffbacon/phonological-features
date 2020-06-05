@@ -138,5 +138,5 @@ def count(lg):
     result = pd.DataFrame(result)
 
 
-if __name__ == "__main__":
-    prepare()
+# if __name__ == "__main__":
+#     prepare()
